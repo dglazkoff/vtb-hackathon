@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 let status = '';
 
-async function identify(data) {
+function identify(data) {
     return new Promise((resolve, reject) => {
         if (data === 123) {
             // success identify
@@ -23,9 +23,18 @@ function Home() {
         setState(status)
     }, [status])
 
+    const onSubmit = (e) => {
+        e.preventDefault()
+    }
+
     return (
         <div className="home">
-            <p>{state}</p>
+            <div className="home__panel panel">
+                <p className="status">status: <b>{state}</b></p>
+                <form className="form-home" onSubmit={onSubmit}>
+                    <input type="submit" value="SEND" className="button"/>
+                </form>
+            </div>
         </div>
     );
 }

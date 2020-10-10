@@ -2,6 +2,7 @@
 
 :root {
     --max-width: 360px;
+    --tex-dark-color: #929292
 }
 
 body {
@@ -93,7 +94,11 @@ a {
 }
 
 .home {
-    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
 }
 
 .canvas {
@@ -125,4 +130,31 @@ a {
     color: #FFFFFF;
     font-weight: bold;
     font-size: 20px;
+}
+
+.panel {
+    width: 100%;
+    height: 100%;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    padding: 14px 30px;
+}
+
+.home__panel {
+    width: 70vw;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.status {
+    color: var(--tex-dark-color);
+    font-size: 24px;
+    margin: 0;
+}
+
+.form-home {
+    margin-top: 20px;
 }

@@ -93,11 +93,14 @@ function App() {
         setPoint()
 
         timer = setTimeout(() => {
-            fetch('123', {
+            fetch('https://floating-journey-29995.herokuapp.com/points', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({ points: arrPoints })
             }).then(res => res.json()).then(res => {
-                console.log(result)
+                console.log(res)
                 setResult(res)
             })
             clearInterval(timeInterval);
@@ -121,7 +124,7 @@ function App() {
         }).then(res => {
             return res.json()
         }).then((res) => {
-            sessionStorage.setItem('token', `Bearer ${res.accessToken}`)
+            localStorage.setItem('token', `Bearer ${res.accessToken}`)
             location.href = '/app'
         })
     }
