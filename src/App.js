@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 const WIDTH_CANVAS = 360;
 const HEIGHT_CANVAS = 300;
+const INTERVAL_TIME = 50;
 const TIMER = 2000;
 const DELAY_TIME = 500;
 
@@ -30,6 +31,7 @@ function App() {
     const [ userName, setUserName ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ result, setResult ] = useState();
+    const [ time, setTime ] = useState(0);
 
     useEffect(() => {
         canvas = document.getElementById('canvas');
@@ -60,6 +62,7 @@ function App() {
         arrPoints = [];
         clearTimeout(timer);
         clearInterval(timeInterval)
+        setTime(0);
     }
 
     const onMouseUp = (e) => {
@@ -86,6 +89,7 @@ function App() {
 
     const setTrackingData = () => {
         setPoint()
+        setTime((time) => time + INTERVAL_TIME);
 
         timer = setTimeout(() => {
             fetch('https://floating-journey-29995.herokuapp.com/points', {
@@ -104,7 +108,8 @@ function App() {
 
         timeInterval = setInterval(() => {
             setPoint()
-        }, 50)
+            setTime((time) => time + INTERVAL_TIME);
+        }, INTERVAL_TIME)
     }
 
     const onSubmit = (e) => {
@@ -177,6 +182,9 @@ function App() {
                         id="canvas"
                         className="canvas"
                     />
+                    <div className="progressbar">
+                        <span style={{ width: `${time / TIMER * 100}%` }} />
+                    </div>
                 </div>
             </div>
         </div>
