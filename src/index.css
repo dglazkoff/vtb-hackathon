@@ -81,7 +81,14 @@ a {
     text-decoration: none;
 }
 
-.button:hover, .button:active, .button:focus {
+.button:disabled {
+    color: rgb(246, 246, 246);
+    background-color: rgba(19, 1, 1, 0.3);
+    border-color: rgba(118, 118, 118, 0.3);
+    cursor: not-allowed;
+}
+
+.button:hover:not([disabled]), .button:active, .button:focus {
     background: #43A047;
 }
 
@@ -102,8 +109,20 @@ a {
     background-color: #c8c8c8;
     margin-right: 100px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    position: relative;
 }
 
 .wrapper-canvas_enter {
     background-color: #8fdd8f;
+}
+
+.canvas__text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 20px;
 }
