@@ -49,7 +49,7 @@ body {
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
     position: relative;
-    left: calc(50% - var(--max-width) / 2);
+    left: calc(50% - var(--max-width));
 }
 
 input {
@@ -129,7 +129,7 @@ a {
     transform: translate(-50%, -50%);
     color: #FFFFFF;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .panel {

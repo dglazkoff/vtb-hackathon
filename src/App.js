@@ -3,13 +3,15 @@ import React, {useEffect, useState} from 'react';
 const WIDTH_CANVAS = 360;
 const HEIGHT_CANVAS = 300;
 const TIMER = 2000;
+const DELAY_TIME = 500;
 
 let x;
 let y;
 let timer;
+let delayTimer;
 let timeInterval;
 let context;
-let isDrawing;
+let canvas;
 let arrPoints = [];
 
 function drawLine(context, x1, y1, x2, y2) {
@@ -23,33 +25,19 @@ function drawLine(context, x1, y1, x2, y2) {
 }
 
 function App() {
-    const [ isEnter, setEnter ] = useState(false);
     const [ isPrinted, setPrinted ] = useState(false);
+    const [ isDrawing, setDrawing ] = useState(false);
     const [ userName, setUserName ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ result, setResult ] = useState();
 
     useEffect(() => {
-        const canvas = document.getElementById('canvas');
+        canvas = document.getElementById('canvas');
         context = canvas.getContext('2d');
 
+        return clearTimeout(delayTimer)
         // localStorage.removeItem('token')
     }, [])
-
-    const onMouseOver = (e) => {
-        setEnter(true)
-    }
-
-    const onMouseOut = (e) => {
-        setEnter(false)
-    }
-
-    const onMouseMove = (e) => {
-        if (isEnter && timer && !isPrinted) {
-            // console.log(e.nativeEvent.offsetX / WIDTH_CANVAS)
-            // console.log(e.nativeEvent.offsetY / HEIGHT_CANVAS)
-        }
-    }
 
     const onMouseMovePage = (e) => {
         if (isDrawing === true) {
@@ -63,9 +51,15 @@ function App() {
         e.preventDefault()
         x = e.nativeEvent.offsetX;
         y = e.nativeEvent.offsetY;
-        isDrawing = true;
+        setDrawing(true);
 
         setTrackingData();
+    }
+
+    const clearTrackingData = () => {
+        arrPoints = [];
+        clearTimeout(timer);
+        clearInterval(timeInterval)
     }
 
     const onMouseUp = (e) => {
@@ -73,16 +67,17 @@ function App() {
             drawLine(context, x, y, e.nativeEvent.offsetX, e.nativeEvent.offsetY);
             x = 0;
             y = 0;
-            isDrawing = false;
+            setDrawing(false);
         }
 
         clearTrackingData();
-    }
 
-    const clearTrackingData = () => {
-        arrPoints = [];
-        clearTimeout(timer);
-        clearInterval(timeInterval)
+        if (isPrinted) {
+            delayTimer = setTimeout(() => {
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                setPrinted(false)
+            }, DELAY_TIME)
+        }
     }
 
     const setPoint = () => {
@@ -101,7 +96,7 @@ function App() {
                 body: JSON.stringify({ points: arrPoints })
             }).then(res => res.json()).then(res => {
                 console.log(res)
-                setResult(res)
+                setResult(res.response)
             })
             clearInterval(timeInterval);
             setPrinted(true)
@@ -125,7 +120,14 @@ function App() {
             return res.json()
         }).then((res) => {
             localStorage.setItem('token', `Bearer ${res.accessToken}`)
-            location.href = '/app'
+            fetch('https://morning-tundra-59000.herokuapp.com/app', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${res.accessToken}`
+                }
+            }).then(res => res.text()).then(res => {
+                document.write(res)
+            })
         })
     }
 
@@ -159,17 +161,19 @@ function App() {
                         width: WIDTH_CANVAS + 100,
                         height: HEIGHT_CANVAS + 100
                     }}
-                    className={`wrapper-canvas ${isEnter ? 'wrapper-canvas_enter' : ''}`}
+                    className={`wrapper-canvas ${isDrawing ? 'wrapper-canvas_enter' : ''}`}
                 >
-                    <p className="canvas__text">{isPrinted ? result ? result : "STOP" : "PRINT"}</p>
+                    <p className="canvas__text">
+                        {isPrinted
+                            ? result ? result : "STOP"
+                            : "Рисуйте произвольную фигуру в течении 2-х секунд"
+                        }
+                    </p>
                     <canvas
                         width={WIDTH_CANVAS}
                         height={HEIGHT_CANVAS}
-                        onMouseMove={onMouseMove}
                         onMouseDown={onMouseDown}
                         onMouseUp={onMouseUp}
-                        onMouseOut={onMouseOut}
-                        onMouseOver={onMouseOver}
                         id="canvas"
                         className="canvas"
                     />
