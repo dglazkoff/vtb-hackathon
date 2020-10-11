@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 let status = '';
+let key;
 
-function identify(data) {
-    return fetch('url', {
-        method: 'POST', // or GET
-        headers: {
-            'Authorization': `${localStorage.getItem('token')}` // if need
-        },
-        body: JSON.stringify(data) // some data in json
-    })
-}
-
-// here we take response from server in res and if we catch error set status to fail
-identify(123).then(res => status = 'SUCCESS').catch(res => status = 'FAIL')
+fetch('url', {
+    method: 'POST', // or GET
+    headers: {
+        'Authorization': `${localStorage.getItem('token')}` // if need
+    },
+    body: JSON.stringify('data') // some data in json
+}).then(res => {
+    status = res.ok;
+    return res.json();
+}).then(res => key = res['AppAuth'])
 
 function Home() {
     const [ state, setState ] = useState();
@@ -35,7 +34,8 @@ function Home() {
         fetch('https://morning-tundra-59000.herokuapp.com/transaction', {
             method: 'POST',
             headers: {
-                'Authorization': `${localStorage.getItem('token')}`
+                'Authorization': `${localStorage.getItem('token')}`,
+                'App-Auth': key
             },
             body: formData
         }).then(res => {

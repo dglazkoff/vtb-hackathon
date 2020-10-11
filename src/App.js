@@ -32,6 +32,7 @@ function App() {
     const [ password, setPassword ] = useState('');
     const [ result, setResult ] = useState();
     const [ time, setTime ] = useState(0);
+    const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
         canvas = document.getElementById('canvas');
@@ -114,6 +115,7 @@ function App() {
 
     const onSubmit = (e) => {
         e.preventDefault()
+        setLoading(true)
         let formData = new FormData();
         formData.append("UserName", userName);
         formData.append("Password", password);
@@ -125,15 +127,15 @@ function App() {
             return res.json()
         }).then((res) => {
             localStorage.setItem('token', `Bearer ${res.accessToken}`)
-            fetch('https://morning-tundra-59000.herokuapp.com/app', {
+            return fetch('https://morning-tundra-59000.herokuapp.com/app', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${res.accessToken}`
                 }
-            }).then(res => res.text()).then(res => {
-                document.write(res)
             })
-        })
+        }).then(res => res.text()).then(res => {
+            document.write(res)
+        }).finally(() => setLoading(false))
     }
 
     return (
@@ -155,12 +157,14 @@ function App() {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <div className="login__submit">
-                        <input
-                            className="button"
-                            type="submit"
-                            value="Войти"
-                            /* disabled={!result} */
-                        />
+                        {loading ? <div className="loader">Loading...</div> : (
+                            <input
+                                className="button"
+                                type="submit"
+                                value="Войти"
+                                /* disabled={!result} */
+                            />
+                        )}
                     </div>
                 </form>
                 <div
