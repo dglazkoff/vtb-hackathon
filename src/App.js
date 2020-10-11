@@ -52,6 +52,10 @@ function App() {
 
     const onMouseDown = (e) => {
         e.preventDefault()
+        if (result === 'SUCCESS') {
+            e.stopPropagation()
+            return;
+        }
         x = e.nativeEvent.offsetX;
         y = e.nativeEvent.offsetY;
         setDrawing(true);
@@ -76,7 +80,7 @@ function App() {
 
         clearTrackingData();
 
-        if (isPrinted) {
+        if (isPrinted && result !== 'SUCCESS') {
             delayTimer = setTimeout(() => {
                 context.clearRect(0, 0, canvas.width, canvas.height)
                 setPrinted(false)
@@ -91,7 +95,7 @@ function App() {
     const setTrackingData = () => {
         setPoint()
         setTime((time) => time + INTERVAL_TIME);
-
+        setResult('')
         timer = setTimeout(() => {
             fetch('https://floating-journey-29995.herokuapp.com/points', {
                 method: 'POST',
@@ -100,7 +104,6 @@ function App() {
                 },
                 body: JSON.stringify({ points: arrPoints })
             }).then(res => res.json()).then(res => {
-                console.log(res)
                 setResult(res.response)
             })
             clearInterval(timeInterval);
@@ -162,7 +165,7 @@ function App() {
                                 className="button"
                                 type="submit"
                                 value="Войти"
-                                /* disabled={!result} */
+                                disabled={result !== 'SUCCESS'}
                             />
                         )}
                     </div>

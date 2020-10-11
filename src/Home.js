@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from 'react';
 
-let status = '';
 let key;
-
-fetch('url', {
-    method: 'POST', // or GET
-    headers: {
-        'Authorization': `${localStorage.getItem('token')}` // if need
-    },
-    body: JSON.stringify('data') // some data in json
-}).then(res => {
-    status = res.ok;
-    return res.json();
-}).then(res => key = res['AppAuth'])
 
 function Home() {
     const [ state, setState ] = useState();
     const [ transactionStatus, setTransactionStatus ] = useState('');
 
     useEffect(() => {
-        setState(status)
-    }, [status])
+        fetch('url', {
+            method: 'POST', // or GET
+            headers: {
+                'Authorization': `${localStorage.getItem('token')}` // if need
+            },
+            body: JSON.stringify('data') // some data in json
+        }).then(res => {
+            setState(res.ok);
+            return res.json();
+        }).then(res => key = res['AppAuth'])
+    }, [])
 
     const onSubmit = (e) => {
         e.preventDefault();
